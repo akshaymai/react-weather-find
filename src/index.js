@@ -1,17 +1,50 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from 'react'
+import ReactDom from 'react-dom'
+import SessionDisplay from './sessionDisplay'
+import Loadings from './Loading'
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+class Weather extends React.Component{
+  
+ state={
+     lat:null,
+     long:null,
+     errMessage:''
+ }
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+ componentDidMount(){
+    window.navigator.geolocation.getCurrentPosition(pog=>this.setState({lat:pog.coords.latitude,long:pog.coords.longitude}),
+    err=>this.setState({errMessage:err.message}))
+ }
+  
+render(){
+ 
+ 
+ 
+if(this.state.errMessage &&!this.state.lat && !this.state.long)
+{
+    return(
+
+  <SessionDisplay   err={this.state.errMessage}  />
+
+    )
+}
+  
+if(!this.state.errMessage &&this.state.lat && this.state.long)
+{
+    return(
+
+    <SessionDisplay Lat={this.state.lat} />
+ 
+    )
+
+}
+  
+
+
+return <Loadings message="please accept your location" />
+}
+
+
+}
+
+ReactDom.render( <Weather />,document.querySelector('#root'))
